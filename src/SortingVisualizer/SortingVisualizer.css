@@ -1,0 +1,13 @@
+.array-container {
+    height: 98vh; /* Magic here */
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.array-bar {
+    width: 4px;
+    background-color: aqua;
+    display: inline-block;
+    margin: 0 1px;
+}
