@@ -1,4 +1,86 @@
 
+
+    mergeSort = async () => {
+        console.log('start mergesort');
+        const arry = this.state.array.slice();
+        const auxArray = this.state.array.slice();
+
+        await this.mergeSortHelper(arry, auxArray, 0, arry.length - 1);
+
+    }
+
+    mergeSortHelper = async (arry, auxArray, start, end) => {
+        console.log('start mergesorthelper');
+        if (start === end) {
+            return;
+        }
+
+        const middle = Math.floor((start + end) / 2);
+        await this.mergeSortHelper(arry, auxArray, start, middle);
+        await this.mergeSortHelper(arry, auxArray, middle + 1, end);
+        await this.doMerge(arry, auxArray, start, middle, end);
+
+    }
+
+    doMerge = async (arry, auxArray, start, middle, end) => {
+        console.log('start doMerge');
+        let a = start; // Arry start
+        let b = start; // auxArray start
+        let c = middle + 1; // midStart
+
+        while (b <= middle && c <= end) {
+            arry[b].color = SECONDARY_COLOR;  // change color of comparing bars
+            arry[c].color = SECONDARY_COLOR;
+
+            if (auxArray[b] <= auxArray[c]) {
+
+                arry[a] = auxArray[b];
+                this.setState({ array: arry });
+                sleep(ANIMATION_SPEED_MS);
+
+                arry[a].color = PRIMARY_COLOR;  // change color of comparing bars
+                arry[c].color = PRIMARY_COLOR;
+
+                a++;
+                b++;
+            } else {
+                arry[a] = auxArray[c];
+                this.setState({ array: arry });
+                sleep(ANIMATION_SPEED_MS);
+
+                arry[b].color = PRIMARY_COLOR;  // change color of comparing bars
+                arry[a].color = PRIMARY_COLOR;
+
+                a++;
+                c++;
+            }
+        }
+
+        while (b <= middle) {
+            arry[b].color = SECONDARY_COLOR;
+            arry[a] = auxArray[b];
+            this.setState({ array: arry });
+            sleep(ANIMATION_SPEED_MS);
+            arry[a].color = PRIMARY_COLOR;
+
+            a++;
+            b++;
+        }
+
+        while (c <= end) {
+            arry[c].color = SECONDARY_COLOR;
+            arry[a] = auxArray[c];
+            this.setState({ array: arry});
+            sleep(ANIMATION_SPEED_MS);
+
+            arry[a].color = PRIMARY_COLOR;
+            a++;
+            c++;
+        }
+
+
+    }
+
 export function getMergeSortAnimations(array) {
     const animations = [];
     if(array.length <= 1) {
