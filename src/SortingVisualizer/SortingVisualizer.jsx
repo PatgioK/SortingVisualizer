@@ -13,7 +13,7 @@ const SECONDARY_COLOR = "lightgreen";
 const TERTIARY_COLOR = "gold"
 
 // Speed of the animation in ms.
-const ANIMATION_SPEED_MS = 30;
+const ANIMATION_SPEED_MS = 300;
 
 // Lower bound height for bars
 const LOWER_INTERVAL = 19;
@@ -22,7 +22,7 @@ const LOWER_INTERVAL = 19;
 const UPPER_INTERVAL = 399;
 
 // Number of array bars.
-const NUMBER_OF_BARS = 100;
+const NUMBER_OF_BARS = 4;
 
 
 // Javascript sleep() best practice found at:
@@ -40,6 +40,7 @@ function arraymove(arr, fromIndex, toIndex) {
 
 // Function to swap elements in an array.
 function swapper(arr, leftIdx, rightIdx) {
+    console.log('swapper  left:' + leftIdx + ' right:' + rightIdx);
     var temp = arr[leftIdx];
     arr[leftIdx] = arr[rightIdx];
     arr[rightIdx] = temp;
@@ -126,10 +127,10 @@ export default class SortingVisualizer extends React.Component {
         let auxArray = arry.slice();
 
         await this.mergeSortHelper(arry, auxArray, 0, arry.length - 1);
-        for(let i = 0; i < array.length; i++) {
+        for (let i = 0; i < array.length; i++) {
             arry[i].color = TERTIARY_COLOR;
         }
-        this.setState({array: arry});
+        this.setState({ array: arry });
     }
 
     mergeSortHelper = async (arry, auxArray, start, end) => {
@@ -187,49 +188,52 @@ export default class SortingVisualizer extends React.Component {
         }
     }
 
+    //console.log(JSON.stringify(obj));
+
     quickSort = async () => {
-        let arry = this.state.array.slice();
+        const arry = this.state.array.slice();
+        console.log(JSON.stringify(arry));
+
         await this.quickSortHelper(arry, 0, arry.length - 1);
 
+        console.log('quicksort end');
     }
 
-    quickSortHelper = async (arry, left, right) => {
-        var index;
-        if(arry.length > 1) {
-            index = await this.partition(arry, left, right);
-            if(left < index - 1) {
-                await this.quickSortHelper(arry, left, index - 1);
-            }
-            if(index < right) {
-                await this.quickSortHelper(arry, index, right);
-            }
+    quickSortHelper = async (arry, start, end) => {
+
+        if (start >= end) {
+            return;
         }
-        return arry;
+        console.log('quicksortHelper: start:' + start + ' end:' + end);
+        console.log(JSON.stringify(arry));
+
+        let index = await this.partition(arry, start, end);
+        await this.quickSortHelper(arry, start, index - 1);
+        await this.quickSortHelper(arry, index + 1, end);
 
     }
 
-    partition = async(arr, left, right) => {
-        var pivot = arr[Math.floor((arr.length) / 2)].height;
-        let i = left;
-        let j = right;
+    partition = async (arry, start, end) => {
+        const pivotValue = arry[end].height;
+        let pivotIndex = start;
+        console.log('partition start:' + start + ' end' + end + ' pivotIdx:' + pivotIndex + ' pivotValue' + pivotValue);
+        console.log(JSON.stringify(arry));
 
-        while(i <= j) {
-            while(arr[i].height < pivot){
+        for (let i = start; i < end; i++) {
+            console.log('arry[i].height:' + arry[i].height + ' pivotValue:' + pivotValue);
+            if (arry[i].height < pivotValue) {
+                swapper(arry, i, pivotIndex);
+                
+                this.setState({ array: arry });
+                await sleep(ANIMATION_SPEED_MS);
                 i++;
             }
-            while(arr[j].height > pivot) {
-                j--;
-            }
-
-            if(i <= j) {
-                swapper(arr, i, j);
-                i++;
-                j--;
-            }
-            this.setState({ array: arr});
-            sleep(ANIMATION_SPEED_MS);
         }
-        return i;
+
+        swapper(arry, pivotIndex, end);
+        this.setState({ array: arry });
+        await sleep(ANIMATION_SPEED_MS);
+        return pivotIndex;
     }
 
     arrayLog = async () => {
