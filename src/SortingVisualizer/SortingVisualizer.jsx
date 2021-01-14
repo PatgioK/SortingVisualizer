@@ -13,16 +13,17 @@ const SECONDARY_COLOR = "lightgreen";
 const TERTIARY_COLOR = "gold"
 
 // Speed of the animation in ms.
-const ANIMATION_SPEED_MS = 2200;
+const ANIMATION_SPEED_MS = 30;
 
 // Lower bound height for bars
-const LOWER_INTERVAL = 10;
+const LOWER_INTERVAL = 19;
 
 // Upper bound height for bars.
-const UPPER_INTERVAL = 250;
+const UPPER_INTERVAL = 399;
 
 // Number of array bars.
-const NUMBER_OF_BARS = 4;
+const NUMBER_OF_BARS = 100;
+
 
 // Javascript sleep() best practice found at:
 // https://stackoverflow.com/questions/951021/what-is-the-javascript-version-of-sleep/39914235#39914235
@@ -35,6 +36,13 @@ function arraymove(arr, fromIndex, toIndex) {
     var element = arr[fromIndex];
     arr.splice(fromIndex, 1);
     arr.splice(toIndex, 0, element);
+}
+
+// Function to swap elements in an array.
+function swapper(arr, leftIdx, rightIdx) {
+    var temp = arr[leftIdx];
+    arr[leftIdx] = arr[rightIdx];
+    arr[rightIdx] = temp;
 }
 
 // Generates random Integer in given interval.
@@ -91,17 +99,17 @@ export default class SortingVisualizer extends React.Component {
     bubbleSort = async () => {
         const { array } = this.state;
         console.log(array);
-        await sleep(ANIMATION_SPEED_MS);
+        await sleep(ANIMATION_SPEED_MS / 2);
         for (let i = 0; i < array.length - 1; i++) {
             for (let j = 0; j < array.length - 1 - i; j++) {
                 array[j].color = SECONDARY_COLOR;
                 array[j + 1].color = SECONDARY_COLOR;
-                await sleep(ANIMATION_SPEED_MS);
+                await sleep(ANIMATION_SPEED_MS / 2);
                 if (array[j + 1].height <= array[j].height) {
                     arraymove(array, j, j + 1);
                 }
                 this.setState(array);
-                await sleep(ANIMATION_SPEED_MS);
+                await sleep(ANIMATION_SPEED_MS / 2);
                 array[j].color = PRIMARY_COLOR;
                 array[j + 1].color = TERTIARY_COLOR;
             }
@@ -114,57 +122,35 @@ export default class SortingVisualizer extends React.Component {
 
     mergeSort = async () => {
         const { array } = this.state;
-        const arry = array.slice();
-        const auxArray = arry.slice();
-        const depth = 0;
-        console.log(arry);
-        console.log(auxArray);
+        let arry = array.slice();
+        let auxArray = arry.slice();
 
-        // for (let i = 0; i < arry.length; i++) {
-        //     arraymove(arry, i, 0);
-        //     array[i].color = SECONDARY_COLOR;
-        //     this.setState({array: arry});
-        //     console.log(JSON.stringify(this.state.array));
-        //     await sleep(ANIMATION_SPEED_MS);
-        // }
-
-        await this.mergeSortHelper(arry, auxArray, 0, arry.length - 1, depth);
-
-
-        console.log(arry);
-        console.log(auxArray);
-
+        await this.mergeSortHelper(arry, auxArray, 0, arry.length - 1);
+        for(let i = 0; i < array.length; i++) {
+            arry[i].color = TERTIARY_COLOR;
+        }
+        this.setState({array: arry});
     }
 
-    mergeSortHelper = async (arry, auxArray, start, end, depth) => {
+    mergeSortHelper = async (arry, auxArray, start, end) => {
         if (start === end) {
             return;
         }
-        depth = depth + 1;
         const middle = Math.floor((start + end) / 2);
-        console.log('mergesorthelper');
-        console.log('start:' + start + ' middle:' + middle + ' end:' + end + ' depth:' + depth);
-        await this.mergeSortHelper(arry, auxArray, start, middle, depth);
-        await this.mergeSortHelper(arry, auxArray, middle + 1, end, depth);
-        await this.doMerge(arry, auxArray, start, middle, end, depth);
+
+        await this.mergeSortHelper(arry, auxArray, start, middle);
+        await this.mergeSortHelper(arry, auxArray, middle + 1, end);
+        await this.doMerge(arry, auxArray, start, middle, end);
     }
 
     doMerge = async (arry, auxArray, start, middle, end) => {
-        console.log('do merge: start:' + start + ' middle:' + middle + ' end:' + end);
-        // console.log("do merge");
-        // console.log('start:' + start + ' middle:' + middle + ' end:' + end);
         // const { array } = this.state;
         let a = start;  //arry start
         let b = start;  //auxArray start
         let c = middle + 1; //mid start
 
         while (b <= middle && c <= end) {
-            // array[b].color = SECONDARY_COLOR;
-            // array[c].color = SECONDARY_COLOR;
-            // await sleep(ANIMATION_SPEED_MS);
-
             if (auxArray[b].height <= auxArray[c].height) {
-                // console.log(auxArray[b].height + ' b : c ' + auxArray[c].height);
                 arry[a] = auxArray[b];
                 this.setState({ array: arry });
                 await sleep(ANIMATION_SPEED_MS);
@@ -177,35 +163,73 @@ export default class SortingVisualizer extends React.Component {
                 a++;
                 c++;
             }
-            
-            console.log(JSON.stringify(this.state.array));
         }
 
         while (b <= middle) {
-            console.log('bloop');
             arry[a] = auxArray[b];
             this.setState({ array: arry });
             await sleep(ANIMATION_SPEED_MS);
             a++;
             b++;
-            console.log(JSON.stringify(this.state.array));
         }
 
-
         while (c <= end) {
-            console.log('cloop');
             arry[a] = auxArray[c];
             this.setState({ array: arry });
             await sleep(ANIMATION_SPEED_MS);
             a++;
             c++;
-            console.log(JSON.stringify(this.state.array));
         }
+
+        // Set auxArray to be the same as arry before next recursive call.
+        for (let i = 0; i < arry.length; i++) {
+            auxArray[i] = arry[i];
+        }
+    }
+
+    quickSort = async () => {
+        let arry = this.state.array.slice();
+        await this.quickSortHelper(arry, 0, arry.length - 1);
 
     }
 
+    quickSortHelper = async (arry, left, right) => {
+        var index;
+        if(arry.length > 1) {
+            index = await this.partition(arry, left, right);
+            if(left < index - 1) {
+                await this.quickSortHelper(arry, left, index - 1);
+            }
+            if(index < right) {
+                await this.quickSortHelper(arry, index, right);
+            }
+        }
+        return arry;
 
-    quickSort() {
+    }
+
+    partition = async(arr, left, right) => {
+        var pivot = arr[Math.floor((arr.length) / 2)].height;
+        let i = left;
+        let j = right;
+
+        while(i <= j) {
+            while(arr[i].height < pivot){
+                i++;
+            }
+            while(arr[j].height > pivot) {
+                j--;
+            }
+
+            if(i <= j) {
+                swapper(arr, i, j);
+                i++;
+                j--;
+            }
+            this.setState({ array: arr});
+            sleep(ANIMATION_SPEED_MS);
+        }
+        return i;
     }
 
     arrayLog = async () => {
