@@ -13,7 +13,7 @@ const SECONDARY_COLOR = "lightgreen";
 const TERTIARY_COLOR = "gold"
 
 // Speed of the animation in ms.
-const ANIMATION_SPEED_MS = 300;
+const ANIMATION_SPEED_MS = 30;
 
 // Lower bound height for bars
 const LOWER_INTERVAL = 19;
@@ -22,7 +22,7 @@ const LOWER_INTERVAL = 19;
 const UPPER_INTERVAL = 399;
 
 // Number of array bars.
-const NUMBER_OF_BARS = 4;
+const NUMBER_OF_BARS = 97;
 
 
 // Javascript sleep() best practice found at:
@@ -190,50 +190,76 @@ export default class SortingVisualizer extends React.Component {
 
     //console.log(JSON.stringify(obj));
 
+    // Quicksort implementation from:
+    // https://medium.com/@kasho/quick-sort-algorithm-in-javascript-5432a06e5b7a
+    
     quickSort = async () => {
-        const arry = this.state.array.slice();
-        console.log(JSON.stringify(arry));
+        let arr = this.state.array.slice();
 
-        await this.quickSortHelper(arry, 0, arry.length - 1);
-
-        console.log('quicksort end');
-    }
-
-    quickSortHelper = async (arry, start, end) => {
-
-        if (start >= end) {
-            return;
+        await this.quickSortHelper(arr, 0, arr.length - 1);
+        console.log('quicksort done');
+        for (let i = 0; i < arr.length; i++) {
+            arr[i].color = TERTIARY_COLOR;
         }
-        console.log('quicksortHelper: start:' + start + ' end:' + end);
-        console.log(JSON.stringify(arry));
-
-        let index = await this.partition(arry, start, end);
-        await this.quickSortHelper(arry, start, index - 1);
-        await this.quickSortHelper(arry, index + 1, end);
-
+        this.setState({ array: arr});
+        await sleep(ANIMATION_SPEED_MS);
     }
 
-    partition = async (arry, start, end) => {
-        const pivotValue = arry[end].height;
-        let pivotIndex = start;
-        console.log('partition start:' + start + ' end' + end + ' pivotIdx:' + pivotIndex + ' pivotValue' + pivotValue);
-        console.log(JSON.stringify(arry));
+    partition = async (arr, left, right) => {
+        const pivotIdx = Math.floor((left + right) / 2);
+        const pivotValue = arr[pivotIdx].height;
+        let i = left;
+        let j = right;
 
-        for (let i = start; i < end; i++) {
-            console.log('arry[i].height:' + arry[i].height + ' pivotValue:' + pivotValue);
-            if (arry[i].height < pivotValue) {
-                swapper(arry, i, pivotIndex);
-                
-                this.setState({ array: arry });
+        arr[pivotIdx].color = SECONDARY_COLOR;
+        this.setState({ array: arr});
+        await sleep(ANIMATION_SPEED_MS);
+
+        while (i <= j) {
+            while (arr[i].height < pivotValue) {
+                i++;
+            }
+
+            while (arr[j].height > pivotValue) {
+                j--;
+            }
+
+            if (i <= j) {
+                console.log(JSON.stringify(arr));
+                swapper(arr, i, j);
+                console.log(JSON.stringify(arr));
+                this.setState({ array: arr });
                 await sleep(ANIMATION_SPEED_MS);
                 i++;
+                j--;
             }
         }
 
-        swapper(arry, pivotIndex, end);
-        this.setState({ array: arry });
+        for(let i = 0; i < arr.length; i++) {
+            arr[i].color = PRIMARY_COLOR;
+        }
+
+        this.setState({ array: arr});
         await sleep(ANIMATION_SPEED_MS);
-        return pivotIndex;
+
+        return i;
+    }
+
+    quickSortHelper = async (arr, left, right) => {
+        if (arr.length < 2) {
+            return;
+        }
+
+        const index = await this.partition(arr, left, right);
+
+        if (left < index - 1) {
+            await this.quickSortHelper(arr, left, index - 1);
+        }
+        if (right > index) {
+            await this.quickSortHelper(arr, index, right);
+        }
+        return;
+
     }
 
     arrayLog = async () => {
