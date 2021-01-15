@@ -13,16 +13,16 @@ const SECONDARY_COLOR = "lightgreen";
 const TERTIARY_COLOR = "gold"
 
 // Speed of the animation in ms.
-const ANIMATION_SPEED_MS = 30;
+const ANIMATION_SPEED_MS = 3;
 
 // Lower bound height for bars
 const LOWER_INTERVAL = 19;
 
 // Upper bound height for bars.
-const UPPER_INTERVAL = 399;
+const UPPER_INTERVAL = 98;
 
 // Number of array bars.
-const NUMBER_OF_BARS = 97;
+const NUMBER_OF_BARS = 79;
 
 
 // Javascript sleep() best practice found at:
@@ -68,6 +68,7 @@ export default class SortingVisualizer extends React.Component {
     // Generates a new array and sets it to the state.
     resetArray() {
         const array = [];
+        let numBars = randomIntfromInterval(LOWER_INTERVAL, UPPER_INTERVAL);
         for (let i = 0; i < NUMBER_OF_BARS; i++) {
             array.push({
                 height: randomIntfromInterval(LOWER_INTERVAL, UPPER_INTERVAL),
@@ -75,6 +76,83 @@ export default class SortingVisualizer extends React.Component {
             });
         }
         this.setState({ array });
+    }
+
+    heapSort = async () => {
+        const arry = this.state.array.slice();
+        let size = arry.length;
+        await this.buildMaxHeap(arry, size);
+        await this.heapPop();
+    }
+
+    heapPop = async () => {
+        const arry = this.state.array.slice();
+        let size = arry.length;
+
+        for (let i = size - 1; i >= 0; i--) {
+            arry[0].color = TERTIARY_COLOR;
+            swapper(arry, 0, i);
+            this.setState({ array: arry});
+            await this.maxHeapify(arry, 0, i);
+        }
+    }
+
+    // Converts A[1..n] into a max heap
+    // for i = n/2 down to 1
+    // do maxHeapify (A, i)
+    buildMaxHeap = async (arry, size) => {
+        console.log('buildMaxHeap size:' + size);
+
+        // -1 here cause array indexes start at 0
+        for (let i = Math.floor(size / 2) - 1; i >= 0; i--) {
+            // console.log(i);
+            await this.maxHeapify(arry, i, size);
+        }
+    }
+
+    // root of tree: first element (i = 1)
+    // parent(i) = i/2;
+    // left(i) = 2i;
+    // right(i) = 2i + 1;
+    maxHeapify = async (arry, i, size) => {
+        let maxIdx;
+        let leftIdx = 2 * i;
+        let rightIdx = 2 * i + 1;
+        // if (i === 0) {
+        //     leftIdx = 1;
+        //     rightIdx = 2;
+        // }
+        console.log('maxHeapify:  i:' + i + ' leftIdx:' + leftIdx + ' rightIdx:' + rightIdx);
+
+        if (rightIdx < size) {
+            if (arry[leftIdx].height > arry[rightIdx].height) {
+                maxIdx = leftIdx;
+            } else {
+                maxIdx = rightIdx;
+            }
+        } else if (leftIdx < size) {
+            maxIdx = leftIdx;
+
+        } else {
+            return;
+        }
+
+        if (arry[i].height < arry[maxIdx].height) {
+            arry[i].color = SECONDARY_COLOR;
+            arry[maxIdx].color = SECONDARY_COLOR;
+            swapper(arry, i, maxIdx);
+            this.setState({ array: arry});
+            await sleep(ANIMATION_SPEED_MS);
+
+            
+            arry[i].color = PRIMARY_COLOR;
+            arry[maxIdx].color = PRIMARY_COLOR;
+            this.setState({ array: arry});
+            await sleep(ANIMATION_SPEED_MS);
+
+            await this.maxHeapify(arry, maxIdx, size);
+        }
+        return;
     }
 
     // Insertion sort algorithm 
@@ -105,18 +183,18 @@ export default class SortingVisualizer extends React.Component {
             for (let j = 0; j < array.length - 1 - i; j++) {
                 array[j].color = SECONDARY_COLOR;
                 array[j + 1].color = SECONDARY_COLOR;
-                await sleep(ANIMATION_SPEED_MS / 2);
+                await sleep(ANIMATION_SPEED_MS / 10);
                 if (array[j + 1].height <= array[j].height) {
                     arraymove(array, j, j + 1);
                 }
                 this.setState(array);
-                await sleep(ANIMATION_SPEED_MS / 2);
+                await sleep(ANIMATION_SPEED_MS / 10);
                 array[j].color = PRIMARY_COLOR;
                 array[j + 1].color = TERTIARY_COLOR;
             }
         }
         array[0].color = TERTIARY_COLOR;  // Change last bar to finished color.
-        await sleep(ANIMATION_SPEED_MS);
+        await sleep(ANIMATION_SPEED_MS / 10);
         this.setState(array);
         console.log(array);
     }
@@ -192,7 +270,7 @@ export default class SortingVisualizer extends React.Component {
 
     // Quicksort implementation from:
     // https://medium.com/@kasho/quick-sort-algorithm-in-javascript-5432a06e5b7a
-    
+
     quickSort = async () => {
         let arr = this.state.array.slice();
 
@@ -201,7 +279,7 @@ export default class SortingVisualizer extends React.Component {
         for (let i = 0; i < arr.length; i++) {
             arr[i].color = TERTIARY_COLOR;
         }
-        this.setState({ array: arr});
+        this.setState({ array: arr });
         await sleep(ANIMATION_SPEED_MS);
     }
 
@@ -212,7 +290,7 @@ export default class SortingVisualizer extends React.Component {
         let j = right;
 
         arr[pivotIdx].color = SECONDARY_COLOR;
-        this.setState({ array: arr});
+        this.setState({ array: arr });
         await sleep(ANIMATION_SPEED_MS);
 
         while (i <= j) {
@@ -235,11 +313,11 @@ export default class SortingVisualizer extends React.Component {
             }
         }
 
-        for(let i = 0; i < arr.length; i++) {
+        for (let i = 0; i < arr.length; i++) {
             arr[i].color = PRIMARY_COLOR;
         }
 
-        this.setState({ array: arr});
+        this.setState({ array: arr });
         await sleep(ANIMATION_SPEED_MS);
 
         return i;
@@ -279,6 +357,7 @@ export default class SortingVisualizer extends React.Component {
                     <button onClick={() => this.mergeSort()}>Merge Sort</button>
                     <button onClick={() => this.quickSort()}>Quick Sort</button>
                     <button onClick={() => this.heapSort()}>Heap Sort</button>
+                    <button onClick={() => this.heapPop()}>Heap Pop</button>
                     <button onClick={() => this.bubbleSort()}>Bubble Sort</button>
                     <button onClick={() => this.arrayLog()}>Array Log</button>
                 </div>
