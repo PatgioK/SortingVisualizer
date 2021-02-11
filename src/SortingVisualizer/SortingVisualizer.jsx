@@ -1,6 +1,6 @@
 import React from "react";
 import "./SortingVisualizer.css";
-//import { getMergeSortAnimations } from "../SortingAlgorithms/MergeSort";
+//import { mergeSortHelper } from "../SortingAlgorithms/MergeSort";
 import { setTimeout } from "timers";
 
 // Original color of the array bars.
@@ -68,7 +68,7 @@ export default class SortingVisualizer extends React.Component {
     // Generates a new array and sets it to the state.
     resetArray() {
         const array = [];
-        let numBars = randomIntfromInterval(LOWER_INTERVAL, UPPER_INTERVAL);
+        // let numBars = randomIntfromInterval(LOWER_INTERVAL, UPPER_INTERVAL);
         for (let i = 0; i < NUMBER_OF_BARS; i++) {
             array.push({
                 height: randomIntfromInterval(LOWER_INTERVAL, UPPER_INTERVAL),
@@ -81,13 +81,13 @@ export default class SortingVisualizer extends React.Component {
     heapSort = async () => {
         const arry = this.state.array.slice();
         let size = arry.length;
+
         await this.buildMaxHeap(arry, size);
-        await this.heapPop();
+
+        await this.heapPop(arry, size);
     }
 
-    heapPop = async () => {
-        const arry = this.state.array.slice();
-        let size = arry.length;
+    heapPop = async (arry, size) => {
 
         for (let i = size - 1; i >= 0; i--) {
             arry[0].color = TERTIARY_COLOR;
@@ -118,10 +118,10 @@ export default class SortingVisualizer extends React.Component {
         let maxIdx;
         let leftIdx = 2 * i;
         let rightIdx = 2 * i + 1;
-        // if (i === 0) {
-        //     leftIdx = 1;
-        //     rightIdx = 2;
-        // }
+        if (i === 0) {
+            leftIdx = 1;
+            rightIdx = 2;
+        }
         console.log('maxHeapify:  i:' + i + ' leftIdx:' + leftIdx + ' rightIdx:' + rightIdx);
 
         if (rightIdx < size) {
@@ -144,7 +144,6 @@ export default class SortingVisualizer extends React.Component {
             this.setState({ array: arry});
             await sleep(ANIMATION_SPEED_MS);
 
-            
             arry[i].color = PRIMARY_COLOR;
             arry[maxIdx].color = PRIMARY_COLOR;
             this.setState({ array: arry});
@@ -357,9 +356,8 @@ export default class SortingVisualizer extends React.Component {
                     <button onClick={() => this.mergeSort()}>Merge Sort</button>
                     <button onClick={() => this.quickSort()}>Quick Sort</button>
                     <button onClick={() => this.heapSort()}>Heap Sort</button>
-                    <button onClick={() => this.heapPop()}>Heap Pop</button>
                     <button onClick={() => this.bubbleSort()}>Bubble Sort</button>
-                    <button onClick={() => this.arrayLog()}>Array Log</button>
+                    {/* <button onClick={() => this.arrayLog()}>Array Log</button> */}
                 </div>
                 <div className="array-container">
                     {array.map((item, idx) => (
