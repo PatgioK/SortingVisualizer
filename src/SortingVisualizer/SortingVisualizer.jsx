@@ -1,7 +1,9 @@
 import React from "react";
 import "./SortingVisualizer.css";
-//import { mergeSortHelper } from "../SortingAlgorithms/MergeSort";
 import { setTimeout } from "timers";
+
+// TODO: move algos to separate file.
+//import { mergeSortHelper } from "../SortingAlgorithms/MergeSort";
 
 // Original color of the array bars.
 const PRIMARY_COLOR = "aqua";
@@ -16,10 +18,10 @@ const TERTIARY_COLOR = "gold"
 const ANIMATION_SPEED_MS = 3;
 
 // Lower bound height for bars
-const LOWER_INTERVAL = 19;
+const LOWER_INTERVAL = 15;
 
 // Upper bound height for bars.
-const UPPER_INTERVAL = 98;
+const UPPER_INTERVAL = 100;
 
 // Number of array bars.
 const NUMBER_OF_BARS = 79;
@@ -357,7 +359,7 @@ export default class SortingVisualizer extends React.Component {
                     <button onClick={() => this.quickSort()}>Quick Sort</button>
                     <button onClick={() => this.heapSort()}>Heap Sort</button>
                     <button onClick={() => this.bubbleSort()}>Bubble Sort</button>
-                    {/* <button onClick={() => this.arrayLog()}>Array Log</button> */}
+                    <button onClick={() => this.arrayLog()}>Array Log</button>
                 </div>
                 <div className="array-container">
                     {array.map((item, idx) => (
