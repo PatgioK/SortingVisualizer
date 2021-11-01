@@ -5,6 +5,7 @@ import { setTimeout } from "timers";
 // TODO: move algos to separate file.
 //import { mergeSortHelper } from "../SortingAlgorithms/MergeSort";
 
+
 // Original color of the array bars.
 const PRIMARY_COLOR = "aqua";
 
