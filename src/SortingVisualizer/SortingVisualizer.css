@@ -11,3 +11,33 @@
     display: inline-block;
     margin: 0 1px;
 }
+
+body {
+    background-color: #2C3E50;
+}
+
+.button-bar button {
+    background-color: #003399; 
+    border: 1px solid green; /* Green border */
+    color: white; /* White text */
+    padding: 10px 24px; /* Some padding */
+    cursor: pointer; /* Pointer/hand icon */
+    float: left; /* Float the buttons side by side */
+    width: 16.66%;
+  }
+  
+  .button-bar button:not(:last-child) {
+    border-right: none; /* Prevent double borders */
+  }
+  
+  /* Clear floats (clearfix hack) */
+  .button-bar:after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+  
+  /* Add a background color on hover */
+  .button-bar button:hover {
+    background-color: #3333ff;
+  }

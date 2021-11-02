@@ -5,7 +5,6 @@ import { setTimeout } from "timers";
 // TODO: move algos to separate file.
 //import { mergeSortHelper } from "../SortingAlgorithms/MergeSort";
 
-
 // Original color of the array bars.
 const PRIMARY_COLOR = "aqua";
 
@@ -22,11 +21,10 @@ const ANIMATION_SPEED_MS = 3;
 const LOWER_INTERVAL = 15;
 
 // Upper bound height for bars.
-const UPPER_INTERVAL = 100;
+const UPPER_INTERVAL = 400;
 
 // Number of array bars.
-const NUMBER_OF_BARS = 79;
-
+const NUMBER_OF_BARS = 129;
 
 // Javascript sleep() best practice found at:
 // https://stackoverflow.com/questions/951021/what-is-the-javascript-version-of-sleep/39914235#39914235
@@ -360,7 +358,7 @@ export default class SortingVisualizer extends React.Component {
                     <button onClick={() => this.quickSort()}>Quick Sort</button>
                     <button onClick={() => this.heapSort()}>Heap Sort</button>
                     <button onClick={() => this.bubbleSort()}>Bubble Sort</button>
-                    <button onClick={() => this.arrayLog()}>Array Log</button>
+                    {/* <button onClick={() => this.arrayLog()}>Array Log</button> */}
                 </div>
                 <div className="array-container">
                     {array.map((item, idx) => (
