@@ -7,20 +7,21 @@
 
 .array-bar {
     width: 4px;
-    background-color: aqua;
+    background-color: #2670d8;
     display: inline-block;
     margin: 0 1px;
 }
 
 body {
-    background-color: #2C3E50;
+    background-color: #0f2d56;
 }
 
 .button-bar button {
-    background-color: #003399; 
-    border: 1px solid green; /* Green border */
+    background-color: #164382; 
+    border: 1px solid White;
     color: white; /* White text */
-    padding: 10px 24px; /* Some padding */
+    font-weight: bold;
+    padding: 10px 24px; 
     cursor: pointer; /* Pointer/hand icon */
     float: left; /* Float the buttons side by side */
     width: 16.66%;
