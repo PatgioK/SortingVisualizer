@@ -3,7 +3,7 @@ import "./SortingVisualizer.css";
 import { setTimeout } from "timers";
 
 // TODO: move algos to separate file.
-//import { mergeSortHelper } from "../SortingAlgorithms/MergeSort";
+//import { mergeSortHelper } from "../mergeSort";
 
 // Original color of the array bars.
 const PRIMARY_COLOR = "aqua";
@@ -93,7 +93,7 @@ export default class SortingVisualizer extends React.Component {
         for (let i = size - 1; i >= 0; i--) {
             arry[0].color = TERTIARY_COLOR;
             swapper(arry, 0, i);
-            this.setState({ array: arry});
+            this.setState({ array: arry });
             await this.maxHeapify(arry, 0, i);
         }
     }
@@ -142,12 +142,12 @@ export default class SortingVisualizer extends React.Component {
             arry[i].color = SECONDARY_COLOR;
             arry[maxIdx].color = SECONDARY_COLOR;
             swapper(arry, i, maxIdx);
-            this.setState({ array: arry});
+            this.setState({ array: arry });
             await sleep(ANIMATION_SPEED_MS);
 
             arry[i].color = PRIMARY_COLOR;
             arry[maxIdx].color = PRIMARY_COLOR;
-            this.setState({ array: arry});
+            this.setState({ array: arry });
             await sleep(ANIMATION_SPEED_MS);
 
             await this.maxHeapify(arry, maxIdx, size);
@@ -358,6 +358,7 @@ export default class SortingVisualizer extends React.Component {
                     <button onClick={() => this.quickSort()}>Quick Sort</button>
                     <button onClick={() => this.heapSort()}>Heap Sort</button>
                     <button onClick={() => this.bubbleSort()}>Bubble Sort</button>
+                    <a href="http://patgiok.azurewebsites.net/"><button>Home</button></a>
                     {/* <button onClick={() => this.arrayLog()}>Array Log</button> */}
                 </div>
                 <div className="array-container">
@@ -373,6 +374,9 @@ export default class SortingVisualizer extends React.Component {
                         ></div>
                     ))}
                 </div>
+                {/* <footer>
+                    <a href="../src/pathfindingsrc/index.js">pathfinder</a>
+                </footer> */}
             </React.Fragment>
         );
     }

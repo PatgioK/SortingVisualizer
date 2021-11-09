@@ -24,7 +24,7 @@ body {
     padding: 10px 24px; 
     cursor: pointer; /* Pointer/hand icon */
     float: left; /* Float the buttons side by side */
-    width: 16.66%;
+    width: 14.28%;
   }
   
   .button-bar button:not(:last-child) {
