@@ -13,11 +13,11 @@
 }
 
 body {
-    background-color: #0f2d56;
+  background-color: #777;
 }
 
 .button-bar button {
-    background-color: #164382; 
+  background-color:#002570;
     border: 1px solid White;
     color: white; /* White text */
     font-weight: bold;
