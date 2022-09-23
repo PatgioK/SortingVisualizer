@@ -15,7 +15,7 @@ const SECONDARY_COLOR = "lightgreen";
 const TERTIARY_COLOR = "gold"
 
 // Speed of the animation in ms.
-const ANIMATION_SPEED_MS = 1000;
+const ANIMATION_SPEED_MS = 3;
 
 // Lower bound height for bars
 const LOWER_INTERVAL = 15;
