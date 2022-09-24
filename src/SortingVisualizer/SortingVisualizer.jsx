@@ -15,7 +15,7 @@ const SECONDARY_COLOR = "lightgreen";
 const TERTIARY_COLOR = "gold"
 
 // Speed of the animation in ms.
-const ANIMATION_SPEED_MS = 3;
+const ANIMATION_SPEED_MS = 1000;
 
 // Lower bound height for bars
 const LOWER_INTERVAL = 15;
@@ -115,7 +115,10 @@ export default class SortingVisualizer extends React.Component {
     // parent(i) = i/2;
     // left(i) = 2i;
     // right(i) = 2i + 1;
+    // size = arraylength
     maxHeapify = async (arry, i, size) => {
+        
+        // this causes bug sometimes when biggest value is on the wrong side
         let maxIdx;
         let leftIdx = 2 * i;
         let rightIdx = 2 * i + 1;
@@ -329,7 +332,6 @@ export default class SortingVisualizer extends React.Component {
         }
 
         const index = await this.partition(arr, left, right);
-
         if (left < index - 1) {
             await this.quickSortHelper(arr, left, index - 1);
         }
@@ -374,9 +376,6 @@ export default class SortingVisualizer extends React.Component {
                         ></div>
                     ))}
                 </div>
-                {/* <footer>
-                    <a href="../src/pathfindingsrc/index.js">pathfinder</a>
-                </footer> */}
             </React.Fragment>
         );
     }

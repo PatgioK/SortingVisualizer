@@ -1,5 +1,6 @@
 .array-container {
-    height: 94vh; /* Magic here */
+  /* Magic here */
+    /* height: 94vh;  */
     display: flex;
     justify-content: center;
     align-items: flex-end;
